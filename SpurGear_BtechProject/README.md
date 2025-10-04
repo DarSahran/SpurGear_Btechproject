@@ -1,5 +1,5 @@
 ---
-title: Spur Gear Dimensional Analysis
+title: spur-gear-analyzer
 emoji: ⚙️
 colorFrom: blue
 colorTo: purple
@@ -9,7 +9,7 @@ app_file: app.py
 pinned: false
 license: mit
 ---
-
+    
 # ⚙️ Spur Gear Dimensional Analysis
 
 ## Overview
