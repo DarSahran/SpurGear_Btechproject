@@ -28,7 +28,7 @@ from scipy.signal import find_peaks, savgol_filter, medfilt
 @dataclass
 class Config:
     # Paths
-    input_image: str = "gear_4.png"
+    input_image: str = "gear_3.png"
     out_dir: str = "Output"
 
     # Preprocessing
@@ -83,7 +83,7 @@ class Config:
 
 def parse_args() -> Config:
     p = argparse.ArgumentParser(description="Gear analysis pipeline")
-    p.add_argument("--input", "-i", type=str, default="gear_4.png", help="Path to input image")
+    p.add_argument("--input", "-i", type=str, default="gear_3.png", help="Path to input image")
     p.add_argument("--out", "-o", type=str, default="Output", help="Output directory")
     p.add_argument("--show", action="store_true", help="Show plots interactively")
     p.add_argument("--save-plots", action="store_true", help="Save plots to output")
