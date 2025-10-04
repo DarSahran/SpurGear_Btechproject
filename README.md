@@ -75,7 +75,7 @@ This project implements an advanced computer vision system for automated analysi
 ### Sample Results
 | Input | Output | Measurements |
 |-------|--------|-------------|
-| ![Sample Gear](assets/sample_input.png) | ![Analysis Result](assets/sample_output.png) | **29 teeth detected**<br>Quality: 94%<br>Processing: 4.2s |
+| ![Sample Gear](assets/sample_input.png) | ![Analysis Result](assets/sample_output.webp) | **50 teeth detected**<br>Quality: 64%<br>Processing: 1.96s |
 
 ---
 
