@@ -451,7 +451,7 @@ with gr.Blocks(
                 with gr.Column(scale=2, min_width=120):
                     calibration_input = gr.Number(
                         label="🔧 Calibration (px/mm)",
-                        value=None
+                        value=1
                     )
                 with gr.Column(scale=1, min_width=80):
                     min_teeth_input = gr.Slider(4, 60, 12, step=1, label="Min")
