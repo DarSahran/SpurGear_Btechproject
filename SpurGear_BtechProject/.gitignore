@@ -1,7 +1,0 @@
-__pycache__/
-*.pyc
-.venv/
-Output_UI/
-*.png
-*.jpg
-.DS_Store

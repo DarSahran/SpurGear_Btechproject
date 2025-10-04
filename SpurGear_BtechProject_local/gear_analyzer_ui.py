@@ -17,26 +17,24 @@ def process_gear_image(image, pixels_per_mm=None, min_teeth=12, max_teeth=120):
     """Process uploaded gear image and return results with timing"""
     if image is None:
         empty_html = """
-        <div style='text-align: center; padding: 60px; background: linear-gradient(135deg, #f1f5f9 0%, #e2e8f0 100%); border-radius: 16px;'>
+        <div style='text-align: center; padding: 60px; background: var(--background-fill-secondary); 
+                    border-radius: 16px; border: 2px dashed var(--border-color-primary);'>
             <div style='font-size: 4em; margin-bottom: 16px;'>📤</div>
-            <h3 style='color: #475569; margin: 0;'>No Image Uploaded</h3>
-            <p style='color: #94a3b8; margin-top: 8px;'>Please upload a gear image to begin analysis</p>
+            <h3 style='color: var(--body-text-color); margin: 0;'>No Image Uploaded</h3>
+            <p style='color: var(--body-text-color-subdued); margin-top: 8px;'>Please upload a gear image to begin analysis</p>
         </div>
         """
         return None, None, empty_html, "⚠️ Upload an image first"
     
     start_time = time.time()
     
-    # Save uploaded image temporarily
     with tempfile.NamedTemporaryFile(suffix='.png', delete=False) as tmp:
         tmp_path = Path(tmp.name)
         cv2.imwrite(str(tmp_path), cv2.cvtColor(image, cv2.COLOR_RGB2BGR))
     
-    # Create output directory
     out_dir = Path("Output_UI")
     out_dir.mkdir(exist_ok=True)
     
-    # Configure and run analysis
     cfg = Config(
         input_image=str(tmp_path),
         out_dir=str(out_dir),
@@ -52,24 +50,20 @@ def process_gear_image(image, pixels_per_mm=None, min_teeth=12, max_teeth=120):
         results = analyze_gear(cfg)
         processing_time = time.time() - start_time
         
-        # Load overlay image
         overlay_path = out_dir / "gear_teeth_overlay.png"
         overlay_img = None
         if overlay_path.exists():
             overlay_img = cv2.imread(str(overlay_path))
             overlay_img = cv2.cvtColor(overlay_img, cv2.COLOR_BGR2RGB)
         
-        # Load radii diagram
         radii_path = out_dir / "gear_radii_overlay.png"
         radii_img = None
         if radii_path.exists():
             radii_img = cv2.imread(str(radii_path))
             radii_img = cv2.cvtColor(radii_img, cv2.COLOR_BGR2RGB)
         
-        # Format results for display
         results_html = format_results_html(results, processing_time)
         
-        # Cleanup temp file
         tmp_path.unlink()
         
         status_msg = f"✅ Analysis Complete • {processing_time:.2f}s"
@@ -77,19 +71,18 @@ def process_gear_image(image, pixels_per_mm=None, min_teeth=12, max_teeth=120):
         
     except Exception as e:
         error_html = f"""
-        <div style='background: linear-gradient(135deg, #fee2e2 0%, #fecaca 100%); 
+        <div style='background: rgba(239, 68, 68, 0.1); 
                     border-left: 4px solid #ef4444; padding: 24px; border-radius: 12px;'>
-            <h3 style='color: #991b1b; margin: 0 0 8px 0;'>❌ Analysis Failed</h3>
-            <p style='color: #7f1d1d; margin: 0;'>{str(e)}</p>
+            <h3 style='color: #ef4444; margin: 0 0 8px 0; font-weight: 700;'>❌ Analysis Failed</h3>
+            <p style='color: var(--body-text-color); margin: 0; font-weight: 500;'>{str(e)}</p>
         </div>
         """
         return None, None, error_html, f"❌ Error: {str(e)}"
 
 
 def format_results_html(results, processing_time):
-    """Format results into ultra-modern HTML dashboard"""
+    """Format results into ultra-modern HTML dashboard with dark mode support"""
     
-    # Extract values
     tooth_count = results.get('teeth_estimate', 'N/A')
     cx, cy = results['center_px']
     r_add_px = results['r_add_px']
@@ -98,18 +91,15 @@ def format_results_html(results, processing_time):
     r_hole_px = results.get('r_hole_px')
     module_px = results.get('module_px')
     
-    # Physical measurements
     r_add_mm = results.get('r_add_mm')
     r_ded_mm = results.get('r_ded_mm')
     r_pitch_mm = results.get('r_pitch_mm')
     module_mm = results.get('module_mm')
     
-    # Quality metrics
     tooth_meta = results['debug']['tooth_meta']
     quality = (1 - tooth_meta['primary']['noise_level']) * 100
     method = tooth_meta['primary']['method'].replace('_', ' ').title()
     
-    # Determine quality color
     if quality >= 90:
         quality_color = "#10b981"
         quality_label = "Excellent"
@@ -132,6 +122,7 @@ def format_results_html(results, processing_time):
             padding: 0;
             margin: 0;
             animation: fadeIn 0.5s ease-in;
+            color: var(--body-text-color);
         }}
         
         @keyframes fadeIn {{
@@ -146,7 +137,7 @@ def format_results_html(results, processing_time):
             text-align: center;
             color: white;
             margin-bottom: 24px;
-            box-shadow: 0 20px 40px rgba(102, 126, 234, 0.3);
+            box-shadow: 0 8px 32px rgba(102, 126, 234, 0.3);
             position: relative;
             overflow: hidden;
         }}
@@ -177,7 +168,7 @@ def format_results_html(results, processing_time):
             font-weight: 800;
             margin: 0;
             line-height: 1;
-            text-shadow: 0 4px 12px rgba(0,0,0,0.2);
+            text-shadow: 0 4px 12px rgba(0,0,0,0.3);
             letter-spacing: -2px;
         }}
         
@@ -197,12 +188,12 @@ def format_results_html(results, processing_time):
         }}
         
         .stat-chip {{
-            background: white;
+            background: var(--background-fill-secondary);
             border-radius: 12px;
             padding: 16px 20px;
             text-align: center;
-            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
-            border: 1px solid #f1f5f9;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color-primary);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
         }}
         
@@ -214,7 +205,7 @@ def format_results_html(results, processing_time):
         
         .stat-label {{
             font-size: 0.75em;
-            color: #64748b;
+            color: var(--body-text-color-subdued);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 1px;
@@ -223,18 +214,18 @@ def format_results_html(results, processing_time):
         
         .stat-value {{
             font-size: 1.8em;
-            color: #0f172a;
+            color: var(--body-text-color);
             font-weight: 700;
             line-height: 1;
         }}
         
         .section {{
-            background: white;
+            background: var(--background-fill-secondary);
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 20px;
-            box-shadow: 0 1px 3px rgba(0,0,0,0.08);
-            border: 1px solid #f1f5f9;
+            box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+            border: 1px solid var(--border-color-primary);
             transition: all 0.3s ease;
         }}
         
@@ -248,7 +239,7 @@ def format_results_html(results, processing_time):
             gap: 12px;
             margin-bottom: 20px;
             padding-bottom: 16px;
-            border-bottom: 2px solid #f1f5f9;
+            border-bottom: 2px solid var(--border-color-primary);
         }}
         
         .section-icon {{
@@ -259,7 +250,7 @@ def format_results_html(results, processing_time):
         .section-title {{
             font-size: 1.3em;
             font-weight: 700;
-            color: #0f172a;
+            color: var(--body-text-color);
             margin: 0;
             letter-spacing: -0.5px;
         }}
@@ -271,10 +262,10 @@ def format_results_html(results, processing_time):
         }}
         
         .param-card {{
-            background: linear-gradient(135deg, #f8fafc 0%, #f1f5f9 100%);
+            background: var(--background-fill-primary);
             border-radius: 12px;
             padding: 18px;
-            border: 2px solid transparent;
+            border: 2px solid var(--border-color-primary);
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
             position: relative;
             overflow: hidden;
@@ -295,7 +286,7 @@ def format_results_html(results, processing_time):
         .param-card:hover {{
             border-color: #667eea;
             transform: translateY(-2px);
-            box-shadow: 0 8px 16px rgba(102, 126, 234, 0.15);
+            box-shadow: 0 8px 24px rgba(102, 126, 234, 0.2);
         }}
         
         .param-card:hover::before {{
@@ -304,7 +295,7 @@ def format_results_html(results, processing_time):
         
         .param-label {{
             font-size: 0.8em;
-            color: #64748b;
+            color: var(--body-text-color-subdued);
             font-weight: 600;
             text-transform: uppercase;
             letter-spacing: 0.5px;
@@ -313,24 +304,25 @@ def format_results_html(results, processing_time):
         
         .param-value {{
             font-size: 2em;
-            color: #0f172a;
+            color: var(--body-text-color);
             font-weight: 700;
             line-height: 1;
         }}
         
         .param-unit {{
             font-size: 0.6em;
-            color: #94a3b8;
+            color: var(--body-text-color-subdued);
             font-weight: 500;
             margin-left: 4px;
         }}
         
         .quality-section {{
-            background: linear-gradient(135deg, {quality_color}15 0%, {quality_color}05 100%);
-            border: 2px solid {quality_color}40;
+            background: var(--background-fill-secondary);
+            border: 2px solid {quality_color};
             border-radius: 16px;
             padding: 24px;
             margin-bottom: 20px;
+            box-shadow: 0 4px 16px rgba(0,0,0,0.1);
         }}
         
         .quality-header {{
@@ -343,7 +335,7 @@ def format_results_html(results, processing_time):
         .quality-title {{
             font-size: 1.2em;
             font-weight: 700;
-            color: #0f172a;
+            color: var(--body-text-color);
         }}
         
         .quality-badge {{
@@ -359,11 +351,10 @@ def format_results_html(results, processing_time):
         .quality-bar-container {{
             width: 100%;
             height: 12px;
-            background: #e2e8f0;
+            background: var(--border-color-primary);
             border-radius: 6px;
             overflow: hidden;
             margin-bottom: 16px;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.1);
         }}
         
         .quality-bar-fill {{
@@ -382,29 +373,29 @@ def format_results_html(results, processing_time):
         }}
         
         .info-item {{
-            background: white;
+            background: var(--background-fill-primary);
             padding: 14px 18px;
             border-radius: 10px;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            border: 1px solid #e2e8f0;
+            border: 1px solid var(--border-color-primary);
             transition: all 0.2s ease;
         }}
         
         .info-item:hover {{
-            background: #f8fafc;
-            border-color: #cbd5e1;
+            background: var(--background-fill-secondary);
+            border-color: var(--border-color-accent);
         }}
         
         .info-label {{
-            color: #64748b;
+            color: var(--body-text-color-subdued);
             font-weight: 600;
             font-size: 0.9em;
         }}
         
         .info-value {{
-            color: #0f172a;
+            color: var(--body-text-color);
             font-weight: 700;
             font-size: 1.1em;
         }}
@@ -416,23 +407,9 @@ def format_results_html(results, processing_time):
             border-radius: 8px;
             font-size: 0.85em;
             font-weight: 600;
-            background: #e0e7ff;
-            color: #4338ca;
+            background: rgba(102, 126, 234, 0.15);
+            color: #667eea;
             gap: 6px;
-        }}
-        
-        .processing-time {{
-            text-align: center;
-            padding: 16px;
-            background: linear-gradient(135deg, #fef3c7 0%, #fde68a 100%);
-            border-radius: 12px;
-            margin-top: 20px;
-            border: 2px solid #fbbf24;
-        }}
-        
-        .processing-time strong {{
-            color: #78350f;
-            font-size: 1.2em;
         }}
     </style>
     
@@ -529,10 +506,7 @@ def format_results_html(results, processing_time):
                 </div>
         """
     
-    html += """
-            </div>
-        </div>
-    """
+    html += "</div></div>"
     
     # Physical Measurements if calibrated
     if r_add_mm:
@@ -573,15 +547,9 @@ def format_results_html(results, processing_time):
                 </div>
             """
         
-        html += """
-            </div>
-        </div>
-        """
+        html += "</div></div>"
     
-    html += """
-    </div>
-    """
-    
+    html += "</div>"
     return html
 
 
@@ -600,30 +568,11 @@ custom_css = """
 .upload-area {
     border: 3px dashed #667eea !important;
     border-radius: 20px !important;
-    background: linear-gradient(135deg, #f8fafc 0%, #e0e7ff 100%) !important;
     transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1) !important;
-    position: relative !important;
-    overflow: hidden !important;
-}
-
-.upload-area::before {
-    content: '';
-    position: absolute;
-    top: 0;
-    left: -100%;
-    width: 100%;
-    height: 100%;
-    background: linear-gradient(90deg, transparent, rgba(255,255,255,0.3), transparent);
-    transition: left 0.5s ease;
-}
-
-.upload-area:hover::before {
-    left: 100%;
 }
 
 .upload-area:hover {
     border-color: #764ba2 !important;
-    background: linear-gradient(135deg, #e0e7ff 0%, #ddd6fe 100%) !important;
     transform: scale(1.01) !important;
     box-shadow: 0 12px 32px rgba(102, 126, 234, 0.2) !important;
 }
@@ -655,7 +604,7 @@ custom_css = """
 
 .gr-input, .gr-dropdown {
     border-radius: 10px !important;
-    border: 2px solid #e2e8f0 !important;
+    border: 2px solid var(--border-color-primary) !important;
     transition: all 0.3s ease !important;
 }
 
@@ -668,23 +617,8 @@ custom_css = """
     gap: 16px !important;
 }
 
-.gr-panel {
-    border: none !important;
-    box-shadow: 0 1px 3px rgba(0,0,0,0.08) !important;
-}
-
-/* Smooth scrolling */
 html {
     scroll-behavior: smooth;
-}
-
-/* Loading animation */
-@keyframes spin {
-    to { transform: rotate(360deg); }
-}
-
-.loading {
-    animation: spin 1s linear infinite;
 }
 """
 
@@ -733,7 +667,7 @@ with gr.Blocks(
                     calibration_input = gr.Number(
                         label="🔧 Calibration",
                         placeholder="px/mm (optional)",
-                        value=1
+                        value=None
                     )
                 with gr.Column(scale=1):
                     min_teeth_input = gr.Slider(
@@ -803,13 +737,12 @@ with gr.Blocks(
     # Footer
     gr.HTML("""
         <div style='text-align: center; padding: 24px; margin-top: 30px; 
-                    color: #64748b; border-top: 2px solid #f1f5f9;'>
-            <strong style='color: #0f172a;'>Spur Gear Analysis Pro</strong> • 
+                    color: var(--body-text-color-subdued); border-top: 2px solid var(--border-color-primary);'>
+            <strong style='color: var(--body-text-color);'>Spur Gear Analysis Pro</strong> • 
             Computer Vision & AI • 
             <span style='color: #667eea;'>v2.0</span>
         </div>
     """)
-
 
 if __name__ == "__main__":
     print("\n" + "="*75)
@@ -824,7 +757,7 @@ if __name__ == "__main__":
     demo.launch(
         server_name="0.0.0.0",
         server_port=7860,
-        share=True,
+        share=False,
         show_error=True,
-        inbrowser=True  # Auto-open browser
+        inbrowser=True
     )
