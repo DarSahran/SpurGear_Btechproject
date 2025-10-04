@@ -1,0 +1,43 @@
+{
+  "center_px": [
+    218.5748520366717,
+    216.56089706394337
+  ],
+  "r_add_px": 155.7007630481968,
+  "r_ded_px": 136.30209552676183,
+  "r_pitch_px": 146.0014292874793,
+  "r_hole_px": null,
+  "teeth_estimate": 36,
+  "module_px": 8.111190515971073,
+  "circular_pitch_px": 25.482056536841924,
+  "debug": {
+    "threshold": {
+      "center_mean": 184.9315625,
+      "center_std": 41.93522166757431,
+      "border_mean": 254.71346125178354,
+      "border_std": 1.2450949069168105,
+      "intensity_gap": 69.78189875178353,
+      "invert": true,
+      "method_used": "Manual (thresh=200)"
+    },
+    "tooth_meta": {
+      "primary": {
+        "method": "conservative_regular",
+        "cons_count": 36,
+        "lib_count": 9,
+        "noise_level": 0.1987858391117415,
+        "window_length": 35,
+        "prominence": 2.4923312400822835
+      },
+      "fft": {
+        "peak_freq": 6.0478878374920235
+      }
+    }
+  },
+  "r_add_mm": null,
+  "r_ded_mm": null,
+  "r_pitch_mm": null,
+  "r_hole_mm": null,
+  "module_mm": null,
+  "circular_pitch_mm": null
+}
