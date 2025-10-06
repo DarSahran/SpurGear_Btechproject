@@ -28,7 +28,7 @@ from scipy.signal import find_peaks, savgol_filter, medfilt
 @dataclass
 class Config:
     # Paths
-    input_image: str = "gear_3.png"
+    input_image: str = "gear_try1.jpg"
     out_dir: str = "Output"
 
     # Preprocessing
@@ -203,6 +203,9 @@ def auto_threshold(gray_img: np.ndarray, cfg: Config) -> Tuple[np.ndarray, bool,
     k_close = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, cfg.close_kernel)
     final_binary = cv2.morphologyEx(final_binary, cv2.MORPH_OPEN, k_open, iterations=cfg.open_iter)
     final_binary = cv2.morphologyEx(final_binary, cv2.MORPH_CLOSE, k_close, iterations=cfg.close_iter)
+    if not invert:
+        final_binary = cv2.bitwise_not(final_binary)
+
 
     debug = dict(center_mean=center_mean, center_std=center_std,
                  border_mean=border_mean, border_std=border_std,

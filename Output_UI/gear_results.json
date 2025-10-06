@@ -1,43 +1,43 @@
 {
   "center_px": [
-    165.08006764992686,
-    171.81615675280352
+    1008.8717404734336,
+    1046.0215495290201
   ],
-  "r_add_px": 150.02734588040354,
-  "r_ded_px": 136.9675505624937,
-  "r_pitch_px": 143.49744822144862,
+  "r_add_px": 774.5012054073607,
+  "r_ded_px": 662.3182839006296,
+  "r_pitch_px": 718.4097446539952,
   "r_hole_px": null,
-  "teeth_estimate": 35,
-  "module_px": 8.199854184082778,
-  "circular_pitch_px": 25.76060166522198,
+  "teeth_estimate": 30,
+  "module_px": 47.89398297693301,
+  "circular_pitch_px": 150.46338507148735,
   "debug": {
     "threshold": {
-      "center_mean": 111.035,
-      "center_std": 48.08861312722586,
-      "border_mean": 252.6063337956542,
-      "border_std": 11.494459501055283,
-      "intensity_gap": 141.5713337956542,
-      "invert": true,
-      "method_used": "Manual (thresh=181)"
+      "center_mean": 255.0,
+      "center_std": 0.0,
+      "border_mean": 255.0,
+      "border_std": 0.0,
+      "intensity_gap": 0.0,
+      "invert": false,
+      "method_used": "Otsu"
     },
     "tooth_meta": {
       "primary": {
         "method": "conservative_regular",
-        "cons_count": 35,
-        "lib_count": 6,
-        "noise_level": 0.33052485410004123,
+        "cons_count": 30,
+        "lib_count": 10,
+        "noise_level": 0.38055554680408354,
         "window_length": 35,
-        "prominence": 2.1208702950755365
+        "prominence": 16.722959140913815
       },
       "fft": {
-        "peak_freq": 5.570423008216337
+        "peak_freq": 14.32394487827058
       }
     }
   },
-  "r_add_mm": 150.02734588040354,
-  "r_ded_mm": 136.9675505624937,
-  "r_pitch_mm": 143.49744822144862,
+  "r_add_mm": null,
+  "r_ded_mm": null,
+  "r_pitch_mm": null,
   "r_hole_mm": null,
-  "module_mm": 8.199854184082778,
-  "circular_pitch_mm": 25.76060166522198
+  "module_mm": null,
+  "circular_pitch_mm": null
 }
