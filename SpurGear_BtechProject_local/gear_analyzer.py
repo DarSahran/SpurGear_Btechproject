@@ -203,9 +203,9 @@ def auto_threshold(gray_img: np.ndarray, cfg: Config) -> Tuple[np.ndarray, bool,
     k_close = cv2.getStructuringElement(cv2.MORPH_ELLIPSE, cfg.close_kernel)
     final_binary = cv2.morphologyEx(final_binary, cv2.MORPH_OPEN, k_open, iterations=cfg.open_iter)
     final_binary = cv2.morphologyEx(final_binary, cv2.MORPH_CLOSE, k_close, iterations=cfg.close_iter)
+
     if not invert:
         final_binary = cv2.bitwise_not(final_binary)
-
 
     debug = dict(center_mean=center_mean, center_std=center_std,
                  border_mean=border_mean, border_std=border_std,
@@ -213,12 +213,44 @@ def auto_threshold(gray_img: np.ndarray, cfg: Config) -> Tuple[np.ndarray, bool,
     return final_binary, invert, debug
 
 
+# ✅ NEW FUNCTION ADDED (no modification to existing logic)
+def preprocess_with_fallback(img, cfg=None):
+    tolerance = 240
+    border = 20
+
+    borders = np.concatenate([
+        img[:border, :, :].reshape(-1,3),
+        img[-border:, :, :].reshape(-1,3),
+        img[:, :border, :].reshape(-1,3),
+        img[:, -border:, :].reshape(-1,3),
+    ])
+    
+    white_ratio = np.mean(np.all(borders >= tolerance, axis=1))
+    
+    if white_ratio > 0.85:
+        print("✅ Detected pure white background — using direct masking")
+        binary = np.where(np.all(img >= tolerance, axis=-1), 0, 255).astype(np.uint8)
+        was_inverted = False
+        debug = dict(method_used="Direct White Mask", invert=False)
+        return binary, was_inverted, debug
+    else:
+        print("⚙️ Complex lighting — using adaptive thresholding")
+        gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
+        clahe = cv2.createCLAHE(clipLimit=cfg.clahe_clip, tileGridSize=cfg.clahe_grid)
+        gray_eq = clahe.apply(gray)
+        blurred = cv2.GaussianBlur(gray_eq, cfg.gaussian_kernel, 0)
+        return auto_threshold(blurred, cfg)
+
+
+# ✅ EXISTING FUNCTION MODIFIED TO USE FALLBACK
 def preprocess(img: np.ndarray, cfg: Config, out_dir: Path) -> Dict[str, Any]:
     gray = cv2.cvtColor(img, cv2.COLOR_BGR2GRAY)
     clahe = cv2.createCLAHE(clipLimit=cfg.clahe_clip, tileGridSize=cfg.clahe_grid)
     gray_eq = clahe.apply(gray)
     blurred = cv2.GaussianBlur(gray_eq, cfg.gaussian_kernel, 0)
-    binary, inverted, th_debug = auto_threshold(blurred, cfg)
+
+    # 👇 replace direct call with fallback logic
+    binary, inverted, th_debug = preprocess_with_fallback(img, cfg)
 
     fig = plt.figure(figsize=(10, 3))
     plt.subplot(1, 3, 1); plt.title("Gray"); plt.axis("off"); plt.imshow(gray, cmap="gray")
@@ -227,6 +259,7 @@ def preprocess(img: np.ndarray, cfg: Config, out_dir: Path) -> Dict[str, Any]:
     show_or_save(fig, cfg, out_dir, "01_preprocess")
 
     return dict(gray=gray, gray_eq=gray_eq, binary=binary, inverted=inverted, debug=th_debug)
+
 
 
 # ==========================================

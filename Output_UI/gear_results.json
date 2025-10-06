@@ -1,36 +1,31 @@
 {
   "center_px": [
-    1124.260944859752,
-    1014.5720405567813
+    1025.0866254052112,
+    699.8939894959194
   ],
-  "r_add_px": 818.8494433377749,
-  "r_ded_px": 611.7519417020728,
-  "r_pitch_px": 715.3006925199238,
+  "r_add_px": 494.9015008450359,
+  "r_ded_px": 429.6053178410047,
+  "r_pitch_px": 462.2534093430203,
   "r_hole_px": null,
-  "teeth_estimate": 17,
-  "module_px": 84.1530226494028,
-  "circular_pitch_px": 264.3745177327393,
+  "teeth_estimate": 33,
+  "module_px": 28.01535814200123,
+  "circular_pitch_px": 88.01284332659806,
   "debug": {
     "threshold": {
-      "center_mean": 255.0,
-      "center_std": 0.0,
-      "border_mean": 255.0,
-      "border_std": 0.0,
-      "intensity_gap": 0.0,
-      "invert": false,
-      "method_used": "Otsu"
+      "method_used": "Direct White Mask",
+      "invert": false
     },
     "tooth_meta": {
       "primary": {
-        "method": "fallback_closest",
-        "cons_count": 17,
-        "lib_count": 8,
-        "noise_level": 0.21922304166900963,
+        "method": "conservative_regular",
+        "cons_count": 33,
+        "lib_count": 10,
+        "noise_level": 0.36772322369867494,
         "window_length": 35,
-        "prominence": 18.27348775537558
+        "prominence": 9.68020177937539
       },
       "fft": {
-        "peak_freq": 6.207042780583919
+        "peak_freq": 6.0478878374920235
       }
     }
   },
