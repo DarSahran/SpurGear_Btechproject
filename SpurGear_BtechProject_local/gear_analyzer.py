@@ -28,7 +28,7 @@ from scipy.signal import find_peaks, savgol_filter, medfilt
 @dataclass
 class Config:
     # Paths
-    input_image: str = "gear_try1.jpg"
+    input_image: str = "gear_try.jpg"
     out_dir: str = "Output"
 
     # Preprocessing

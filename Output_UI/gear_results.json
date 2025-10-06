@@ -1,15 +1,15 @@
 {
   "center_px": [
-    1008.8717404734336,
-    1046.0215495290201
+    1124.260944859752,
+    1014.5720405567813
   ],
-  "r_add_px": 774.5012054073607,
-  "r_ded_px": 662.3182839006296,
-  "r_pitch_px": 718.4097446539952,
+  "r_add_px": 818.8494433377749,
+  "r_ded_px": 611.7519417020728,
+  "r_pitch_px": 715.3006925199238,
   "r_hole_px": null,
-  "teeth_estimate": 30,
-  "module_px": 47.89398297693301,
-  "circular_pitch_px": 150.46338507148735,
+  "teeth_estimate": 17,
+  "module_px": 84.1530226494028,
+  "circular_pitch_px": 264.3745177327393,
   "debug": {
     "threshold": {
       "center_mean": 255.0,
@@ -22,15 +22,15 @@
     },
     "tooth_meta": {
       "primary": {
-        "method": "conservative_regular",
-        "cons_count": 30,
-        "lib_count": 10,
-        "noise_level": 0.38055554680408354,
+        "method": "fallback_closest",
+        "cons_count": 17,
+        "lib_count": 8,
+        "noise_level": 0.21922304166900963,
         "window_length": 35,
-        "prominence": 16.722959140913815
+        "prominence": 18.27348775537558
       },
       "fft": {
-        "peak_freq": 14.32394487827058
+        "peak_freq": 6.207042780583919
       }
     }
   },
